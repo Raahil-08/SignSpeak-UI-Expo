@@ -26,6 +26,10 @@ export default function TranslateScreen() {
     }, 1500);
   };
 
+
+
+
+  
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: '#463f3a' }]}>
       <StatusBar style="light" />
