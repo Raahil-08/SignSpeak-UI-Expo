@@ -10,25 +10,40 @@ import Animated, {
 } from 'react-native-reanimated';
 
 export default function LoadingScreen() {
-  const glowIntensity = useSharedValue(0);
+  const glowPosition = useSharedValue(-100);
 
   useEffect(() => {
-    glowIntensity.value = withRepeat(
-      withSequence(
-        withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
-        withTiming(0.3, { duration: 1500, easing: Easing.inOut(Easing.ease) })
-      ),
+    glowPosition.value = withRepeat(
+      withTiming(100, {
+        duration: 2000,
+        easing: Easing.inOut(Easing.ease),
+      }),
       -1,
-      true
+      false
     );
   }, []);
 
   const animatedTextStyle = useAnimatedStyle(() => ({
-    textShadow: Platform.select({
-      web: `0 0 ${10 * glowIntensity.value}px rgba(224, 175, 160, ${glowIntensity.value})`,
+    backgroundImage: Platform.select({
+      web: `linear-gradient(
+        90deg,
+        #f4f3ee 0%,
+        #f4f3ee 45%,
+        #e0afa0 50%,
+        #f4f3ee 55%,
+        #f4f3ee 100%
+      )`,
       default: 'none',
     }),
-    opacity: 0.3 + (glowIntensity.value * 0.7),
+    backgroundSize: '200% 100%',
+    backgroundPosition: `${glowPosition.value}% 0`,
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text',
+    color: Platform.OS === 'web' ? 'transparent' : '#f4f3ee',
+    textShadow: Platform.select({
+      web: '0 0 20px rgba(224, 175, 160, 0.5)',
+      default: 'none',
+    }),
   }));
 
   return (
@@ -53,12 +68,12 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   text: {
-    color: '#f4f3ee',
-    fontSize: 48,
+    fontSize: 96,
     fontFamily: Platform.select({
       web: 'Times New Roman',
       default: 'serif',
     }),
-    letterSpacing: 2,
+    letterSpacing: 4,
+    fontWeight: '700',
   },
 });
