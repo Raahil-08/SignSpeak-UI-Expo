@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "EXPO_NO_TELEMETRY=1 npx expo start",
     "build:web": "npx expo export --platform web",
-    "lint": "npx expo lint"
+    "lint": "npx expo lint",
+    "server": "cd server && python app.py"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.2.3",

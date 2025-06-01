@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { StyleSheet, View, Platform, Pressable } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useTheme } from '@/hooks/useThemeContext';
@@ -6,12 +6,13 @@ import ThemedText from './ThemedText';
 import Button from './Button';
 import { Camera, SwitchCamera, Mic, MicOff, Circle } from 'lucide-react-native';
 import Layout from '@/constants/Layout';
+import { processFrame } from '@/services/gestureService';
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
   withRepeat, 
-  withTiming, 
   withSequence,
+  withTiming,
   Easing,
   cancelAnimation 
 } from 'react-native-reanimated';
@@ -32,11 +33,36 @@ export default function CameraWithOverlay({
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState<CameraType>('front');
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
+  const cameraRef = useRef(null);
   
   const recordingPulse = useSharedValue(1);
 
+  const captureFrame = useCallback(async () => {
+    if (!cameraRef.current || !isRecording) return;
+
+    try {
+      const photo = await cameraRef.current.takePictureAsync({
+        quality: 0.5,
+        base64: true,
+      });
+
+      const result = await processFrame(photo.base64);
+      
+      if (result.detected) {
+        // Handle the detected hand landmarks
+        console.log('Hand landmarks detected:', result.landmarks);
+      }
+    } catch (error) {
+      console.error('Error capturing frame:', error);
+    }
+  }, [isRecording]);
+
   React.useEffect(() => {
+    let frameInterval: NodeJS.Timeout;
+
     if (isRecording) {
+      frameInterval = setInterval(captureFrame, 200); // Capture every 200ms
+      
       recordingPulse.value = withRepeat(
         withSequence(
           withTiming(1.2, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
@@ -49,7 +75,11 @@ export default function CameraWithOverlay({
       cancelAnimation(recordingPulse);
       recordingPulse.value = withTiming(1);
     }
-  }, [isRecording]);
+
+    return () => {
+      if (frameInterval) clearInterval(frameInterval);
+    };
+  }, [isRecording, captureFrame]);
 
   const animatedRecordingStyle = useAnimatedStyle(() => ({
     transform: [{ scale: recordingPulse.value }],
@@ -94,14 +124,12 @@ export default function CameraWithOverlay({
 
   const toggleRecording = () => {
     onRecordingChange(!isRecording);
-    if (!isRecording) {
-      onTextRecognized("Hello! This is a sample translation.");
-    }
   };
 
   return (
     <View style={styles.container}>
       <CameraView 
+        ref={cameraRef}
         style={styles.camera} 
         facing={facing}
       >
