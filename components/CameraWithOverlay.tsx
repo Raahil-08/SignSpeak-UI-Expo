@@ -32,10 +32,7 @@ export default function CameraWithOverlay({
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState<CameraType>('front');
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
-  const { colors, theme } = useTheme();
   
-  const borderOpacity = useSharedValue(0.5);
-  const borderScale = useSharedValue(1);
   const recordingPulse = useSharedValue(1);
 
   React.useEffect(() => {
@@ -61,16 +58,19 @@ export default function CameraWithOverlay({
 
   if (!permission) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <ThemedText>Requesting camera permission...</ThemedText>
+      <View style={[styles.container, { backgroundColor: '#463f3a' }]}>
+        <ThemedText style={{ color: '#f4f3ee' }}>Requesting camera permission...</ThemedText>
       </View>
     );
   }
 
   if (!permission.granted) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <ThemedText variant="h3" style={styles.permissionText}>
+      <View style={[styles.container, { backgroundColor: '#463f3a' }]}>
+        <ThemedText 
+          variant="h3" 
+          style={[styles.permissionText, { color: '#f4f3ee' }]}
+        >
           We need your permission to use the camera
         </ThemedText>
         <Button 
@@ -78,6 +78,7 @@ export default function CameraWithOverlay({
           onPress={requestPermission} 
           variant="primary"
           size="large" 
+          style={{ backgroundColor: '#e0afa0' }}
         />
       </View>
     );
@@ -106,50 +107,55 @@ export default function CameraWithOverlay({
       >
         <View style={styles.overlay}>
           <View style={styles.header}>
-            <ThemedText variant="h3" weight="semibold" color="white" style={styles.title}>
+            <ThemedText 
+              variant="h3" 
+              weight="semibold" 
+              style={[styles.title, { color: '#f4f3ee' }]}
+            >
               Sign Language Translator
             </ThemedText>
             {isRecording && (
-              <View style={styles.recordingIndicator}>
+              <View style={[styles.recordingIndicator, { backgroundColor: '#463f3a' }]}>
                 <Animated.View style={[styles.recordingDot, animatedRecordingStyle]} />
-                <ThemedText color="white" style={styles.recordingText}>Recording</ThemedText>
+                <ThemedText style={[styles.recordingText, { color: '#f4f3ee' }]}>
+                  Recording
+                </ThemedText>
               </View>
             )}
           </View>
 
           <View style={styles.controls}>
-            <Button
-              title=""
-              variant="secondary"
-              style={styles.controlButton}
+            <Pressable
+              style={[styles.controlButton, { backgroundColor: '#bcb8b1' }]}
               onPress={toggleAudio}
-              icon={audioEnabled ? 
-                <Mic size={24} color={colors.text} /> : 
-                <MicOff size={24} color={colors.text} />
+            >
+              {audioEnabled ? 
+                <Mic size={24} color="#463f3a" /> : 
+                <MicOff size={24} color="#463f3a" />
               }
-            />
+            </Pressable>
             
             <Pressable
               style={[
                 styles.recordButton,
-                isRecording && styles.recordButtonActive
+                { borderColor: '#e0afa0' },
+                isRecording && { backgroundColor: 'rgba(224, 175, 160, 0.2)' }
               ]}
               onPress={toggleRecording}
             >
               <Circle
                 size={24}
-                color={isRecording ? '#ff4444' : '#ffffff'}
-                fill={isRecording ? '#ff4444' : 'transparent'}
+                color={isRecording ? '#e0afa0' : '#f4f3ee'}
+                fill={isRecording ? '#e0afa0' : 'transparent'}
               />
             </Pressable>
             
-            <Button
-              title=""
-              variant="secondary"
-              style={styles.controlButton}
+            <Pressable
+              style={[styles.controlButton, { backgroundColor: '#bcb8b1' }]}
               onPress={toggleCameraFacing}
-              icon={<SwitchCamera size={24} color={colors.text} />}
-            />
+            >
+              <SwitchCamera size={24} color="#463f3a" />
+            </Pressable>
           </View>
         </View>
       </CameraView>
@@ -169,7 +175,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.4)',
     padding: Layout.spacing.lg,
     justifyContent: 'space-between',
   },
@@ -177,6 +183,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: Layout.spacing.md,
   },
   title: {
     textShadowColor: 'rgba(0,0,0,0.5)',
@@ -186,7 +193,6 @@ const styles = StyleSheet.create({
   recordingIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
     paddingHorizontal: Layout.spacing.md,
     paddingVertical: Layout.spacing.sm,
     borderRadius: Layout.borderRadius.full,
@@ -195,7 +201,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#ff4444',
+    backgroundColor: '#e0afa0',
     marginRight: Layout.spacing.sm,
   },
   recordingText: {
@@ -207,26 +213,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: Layout.spacing.xl,
+    paddingBottom: Layout.spacing.xl,
   },
   controlButton: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   recordButton: {
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(244, 243, 238, 0.2)',
     borderWidth: 3,
-    borderColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  recordButtonActive: {
-    backgroundColor: 'rgba(255,68,68,0.2)',
-    borderColor: '#ff4444',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   permissionText: {
     textAlign: 'center',
