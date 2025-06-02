@@ -37,7 +37,13 @@ cd signspeak-UI-expo
 ```bash
 npm install
 ```
-3. Start the Expo server:
+3.Start the Flask Server
 ```bash
-npx expo start
+cd server
+python app.py
+```
+4. Start the Expo server:
+```bash
+cd UI_expo
+npm run dev
 ```
