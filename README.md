@@ -17,7 +17,7 @@ This is the **SignSpeak UI**, a mobile front-end built with **Expo** for the [Si
 - **React Native + Expo** (cross-platform mobile development)
 - **Reanimated** for smooth animations
 - **Expo Camera** for gesture capture
-- **Flask** backend API (in the [SignSpeak repository](https://github.com/CodeWithInferno/Sign-To-Public))
+- **Flask** backend API (in the [SignSpeak repository]([https://github.com/CodeWithInferno/Sign-To-Public))
 
 ---
 
