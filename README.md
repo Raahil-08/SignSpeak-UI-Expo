@@ -22,7 +22,7 @@ This is the **SignSpeak UI**, a mobile front-end built with **Expo** for the [Si
 ---
 
 ## 🌐 Repository Links
-- **SignSpeak (Backend + AI Processing)**: [github.com/CodeWithInferno/signspeak](https://github.com/CodeWithInferno/signspeak)
+- **SignSpeak (Backend + AI Processing)**: [github.com/CodeWithInferno/signspeak](https://github.com/CodeWithInferno/Sign-To-Public)
 - **SignSpeak UI (This Repo)**: [github.com/yourusername/signspeak-UI-expo](#)  <!-- Replace # with the actual URL if hosted -->
 
 ---
